@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
-const mongoURL = "mongodb://Localhost:27017/hosts";
+const mongoAtlasUrl = process.env.MONGO_URI;
 
-mongoose.connect(mongoURL, {
-  // Removed deprecated options
+mongoose.connect(mongoAtlasUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 const db = mongoose.connection;

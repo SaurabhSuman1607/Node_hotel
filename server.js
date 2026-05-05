@@ -39,6 +39,7 @@ var Person = require("./Models/persons.js");
 var Menu = require("./Models/Menu.js");
 const personRoutes = require("../Proj_2/Routes/personRoutes.js");
 const menuRoutes = require("../Proj_2/Routes/menuRotes.js");
+require("dotenv").config();
 
 app.use(bodyParser.json());
 
@@ -65,6 +66,8 @@ app.use((req, res) => {
   });
 });
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
   console.log("the server is up and running : ");
 });
