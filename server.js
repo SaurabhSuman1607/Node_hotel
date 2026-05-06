@@ -37,8 +37,8 @@ const db = require("./db");
 const bodyParser = require("body-parser");
 var Person = require("./Models/persons.js");
 var Menu = require("./Models/Menu.js");
-const personRoutes = require("../Proj_2/Routes/personRoutes.js");
-const menuRoutes = require("../Proj_2/Routes/menuRotes.js");
+const personRoutes = require("./Routes/personRoutes.js");
+const menuRoutes = require("./Routes/menuRotes.js");
 require("dotenv").config();
 
 app.use(bodyParser.json());
