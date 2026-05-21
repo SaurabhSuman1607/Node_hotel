@@ -1,19 +1,73 @@
 const express = require("express");
 const routes = express.Router();
 var Person = require("../Models/persons");
+var { jwtAuthMiddleware, generateToken } = require("../jwt");
 
-routes.post("/", async (req, res) => {
+routes.post("/signUp", async (req, res) => {
   try {
     const body = req.body;
+    const exsist = await Person.findOne({ username: body.username });
 
+    if (exsist) {
+      return res
+        .status(401)
+        .json({ message: "username Already Existing in the db" });
+    }
     const newPerson = new Person(body);
 
     const saved = await newPerson.save();
-    console.log("Data Saved");
-    res.status(201).json({ status: "successfull", message: saved });
+
+    // Create token
+    const token = generateToken({ id: saved._id, user: saved.username });
+    res.status(201).json({ response: saved, token: token });
   } catch (err) {
     console.log("Interval server error : " + err);
     res.status(500).json({ status: "failed" });
+  }
+});
+
+routes.get("/profile", jwtAuthMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    console.log("User data : ", user);
+
+    const userId = user.id;
+    const prof = await Person.findById(userId);
+
+    res.status(200).json({ data: prof });
+  } catch (err) {
+    res.status(404).json({ data: "Internal server Error " });
+  }
+});
+
+routes.post("/login", async (req, res) => {
+  try {
+    //take username and password
+    const { username, password } = req.body;
+
+    // Find the username in the db
+
+    const user = await Person.findOne({ username });
+
+    //If not found
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    // Create a payloa for token
+    const payLoad = {
+      id: user.id,
+      user: user.username,
+    };
+
+    //Create a token using Payload
+    const token = generateToken(payLoad);
+
+    //Send the response
+    res.json({ token });
+  } catch (err) {
+    console.log("Error : ", err);
+    res.status(500).json({ error: "Invalid username or password" });
   }
 });
 

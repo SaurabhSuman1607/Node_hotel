@@ -42,10 +42,8 @@ const menuRoutes = require("./Routes/menuRotes.js");
 const passport = require("./Authorization/auth.js");
 require("dotenv").config();
 
-
 app.use(bodyParser.json());
 //app.use(logrequest);
-
 
 app.use(passport.initialize());
 
@@ -64,8 +62,8 @@ app.get("/about", (req, res) => {
   res.send(`Hello from the about page owne and I AM :-- ${JSON.stringify(me)}`);
 });
 
-app.use("/person",auth_mw , personRoutes);
-app.use("/menu" , menuRoutes);
+app.use("/person", personRoutes);
+app.use("/menu", menuRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
